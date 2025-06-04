@@ -1,0 +1,5 @@
+names:
+  0: apple
+path: ./datasets
+train: images/train
+val: images/val
