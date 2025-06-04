@@ -31,6 +31,38 @@ yolov5_detection_project/
 
 ## 安装依赖
 
+### 方法一：使用 PDM（推荐）
+
+1. 安装 PDM：
+```bash
+# Windows
+(Invoke-WebRequest -Uri https://pdm-project.org/install-pdm.py -UseBasicParsing).Content | python -
+
+# Linux/Mac
+curl -sSL https://pdm-project.org/install-pdm.py | python3 -
+```
+
+2. 克隆项目：
+```bash
+git clone https://github.com/yourusername/yolov5_detection_project.git
+cd yolov5_detection_project
+```
+
+3. 使用 PDM 创建虚拟环境并安装依赖：
+```bash
+# 初始化项目
+pdm init
+
+# 安装依赖
+pdm install
+
+# 激活虚拟环境
+pdm venv create
+pdm venv activate
+```
+
+### 方法二：使用传统方式
+
 1. 克隆项目：
 ```bash
 git clone https://github.com/yourusername/yolov5_detection_project.git
@@ -148,4 +180,4 @@ pip install pyrealsense2
 
 如有问题或建议，请通过以下方式联系：
 - 提交 Issue
-- 发送邮件至：your.email@example.com 
+- 发送邮件至：corejk@163.com 
