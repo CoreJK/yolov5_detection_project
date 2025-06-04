@@ -1,0 +1,60 @@
+[project]
+name = "yolov5_detection_project"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "任伟明", email = "corejk@163.com"},
+]
+dependencies = [
+    "torch>=1.7.0",
+    "torchvision>=0.8.1",
+    "opencv-python>=4.1.2",
+    "numpy>=1.18.5",
+    "pyrealsense2>=2.50.0",
+    "PyYAML>=5.3.1",
+    "pandas>=2.2.3",
+    "requests>=2.32.3",
+    "ultralytics>=8.3.149",
+    "setuptools>=80.9.0",
+    "scipy>=1.15.3",
+    "seaborn>=0.13.2",
+    "gitpython>=3.1.44",
+]
+requires-python = "==3.10.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+[tool.pdm.resolution]
+respect-source-order = true
+excludes = [
+  "nvidia-cublas-*",
+  "nvidia-cuda-cupti-*",
+  "nvidia-cuda-nvrtc-*",
+  "nvidia-cuda-runtime-*",
+  "nvidia-cudnn-*",
+  "nvidia-cufft-*",
+  "nvidia-curand-*",
+  "nvidia-cusolver-*",
+  "nvidia-cusparse-*",
+  "nvidia-nccl-*",
+  "nvidia-nvtx-*",
+  "triton",
+]
+
+[[tool.pdm.source]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu128"
+include_packages = ["torch", "torchvision", "torchaudio"]
+exclude_packages = ["*"]
+
+[[tool.pdm.source]]
+name = "tsinghua"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+
+[[tool.pdm.source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+
+
+[tool.pdm]
+distribution = false
