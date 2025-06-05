@@ -20,6 +20,7 @@ dependencies = [
     "seaborn>=0.13.2",
     "gitpython>=3.1.44",
     "onnxruntime>=1.22.0",
+    "onnxruntime-gpu>=1.22.0",
 ]
 requires-python = "==3.10.*"
 readme = "README.md"
@@ -51,11 +52,24 @@ exclude_packages = ["*"]
 [[tool.pdm.source]]
 name = "tsinghua"
 url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+exclude_packages = [
+  "nvidia-cublas-*",
+  "nvidia-cuda-cupti-*",
+  "nvidia-cuda-nvrtc-*",
+  "nvidia-cuda-runtime-*",
+  "nvidia-cudnn-*",
+  "nvidia-cufft-*",
+  "nvidia-curand-*",
+  "nvidia-cusolver-*",
+  "nvidia-cusparse-*",
+  "nvidia-nccl-*",
+  "nvidia-nvtx-*",
+  "triton",
+]
 
 [[tool.pdm.source]]
 name = "pypi"
 url = "https://pypi.org/simple"
-
 
 [tool.pdm]
 distribution = false

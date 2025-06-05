@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:3921e88937bf2d863d547ecca8e8cac34867add187995e799145e8bc2a66959f"
+content_hash = "sha256:bd4882da2c98bedd9f58dcdb8d5bbb8cf768937347da491fa8e36f6409f998a3"
 
 [[metadata.targets]]
 requires_python = "==3.10.*"
@@ -567,6 +567,25 @@ files = [
     {file = "onnxruntime-1.22.0-cp310-cp310-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:468c9502a12f6f49ec335c2febd22fdceecc1e4cc96dfc27e419ba237dff5aff"},
     {file = "onnxruntime-1.22.0-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:681fe356d853630a898ee05f01ddb95728c9a168c9460e8361d0a240c9b7cb97"},
     {file = "onnxruntime-1.22.0-cp310-cp310-win_amd64.whl", hash = "sha256:20bca6495d06925631e201f2b257cc37086752e8fe7b6c83a67c6509f4759bc9"},
+]
+
+[[package]]
+name = "onnxruntime-gpu"
+version = "1.22.0"
+requires_python = ">=3.10"
+summary = "ONNX Runtime is a runtime accelerator for Machine Learning models"
+groups = ["default"]
+dependencies = [
+    "coloredlogs",
+    "flatbuffers",
+    "numpy>=1.21.6",
+    "packaging",
+    "protobuf",
+    "sympy",
+]
+files = [
+    {file = "onnxruntime_gpu-1.22.0-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:965da7d33a54917e8e5176f292cc22640819f328370f4fb86087908745b03708"},
+    {file = "onnxruntime_gpu-1.22.0-cp310-cp310-win_amd64.whl", hash = "sha256:6db51c375ffe3887fe5cce61a0ae054e5e9c1eaf0603f8a106589a819976e4b2"},
 ]
 
 [[package]]

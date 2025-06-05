@@ -46,11 +46,37 @@ class YOLODetector:
 
     def init_onnx_model(self, model_path: str):
         """初始化ONNX模型"""
-        self.model = onnxruntime.InferenceSession(model_path)
-        self.input_name = self.model.get_inputs()[0].name
-        self.output_name = self.model.get_outputs()[0].name
-        input_shape = self.model.get_inputs()[0].shape
-        print(f"ONNX模型输入形状: {input_shape}")
+        try:
+            # 检查是否有可用的CUDA
+            cuda_available = torch.cuda.is_available()
+            if cuda_available:
+                try:
+                    # 首先尝试使用GPU
+                    providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
+                    self.model = onnxruntime.InferenceSession(model_path, providers=providers)
+                    print("成功使用GPU初始化ONNX模型")
+                except Exception as e:
+                    print(f"GPU初始化失败，错误信息: {str(e)}")
+                    print("回退到CPU模式")
+                    providers = ['CPUExecutionProvider']
+                    self.model = onnxruntime.InferenceSession(model_path, providers=providers)
+            else:
+                print("未检测到可用的GPU，使用CPU模式")
+                providers = ['CPUExecutionProvider']
+                self.model = onnxruntime.InferenceSession(model_path, providers=providers)
+            
+            self.input_name = self.model.get_inputs()[0].name
+            self.output_name = self.model.get_outputs()[0].name
+            input_shape = self.model.get_inputs()[0].shape
+            print(f"ONNX模型输入形状: {input_shape}")
+            
+            # 打印当前使用的执行提供程序
+            current_provider = self.model.get_providers()[0]
+            print(f"当前使用的执行提供程序: {current_provider}")
+            
+        except Exception as e:
+            print(f"ONNX模型初始化失败: {str(e)}")
+            raise
 
     def init_torch_model(self, model_path: str):
         """初始化PyTorch模型"""
