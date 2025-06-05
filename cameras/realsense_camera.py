@@ -5,21 +5,32 @@ from .base import Camera
 
 class RealSenseCamera(Camera):
     """RealSense摄像头类"""
-    def __init__(self):
+    def __init__(self, enable_depth=True):
+        """
+        初始化RealSense摄像头
+        Args:
+            enable_depth: 是否启用深度检测，默认为True
+        """
         super().__init__()
         self.pipeline = None
         self.config = None
         self.align = None
         self.depth_frame = None
         self.color_frame = None
+        self.enable_depth = enable_depth
 
     def start(self):
         """启动RealSense摄像头"""
         self.pipeline = rs.pipeline()
         self.config = rs.config()
+        # 始终启用彩色流
         self.config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
-        self.config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
-        self.align = rs.align(rs.stream.color)
+        
+        # 根据设置决定是否启用深度流
+        if self.enable_depth:
+            self.config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+            self.align = rs.align(rs.stream.color)
+            
         self.pipeline.start(self.config)
         self.is_running = True
 
@@ -33,12 +44,16 @@ class RealSenseCamera(Camera):
         """获取当前帧"""
         if not self.is_running:
             return None
+            
         frames = self.pipeline.wait_for_frames()
-        aligned_frames = self.align.process(frames)
         
-        # 获取对齐后的深度帧和彩色帧
-        self.depth_frame = aligned_frames.get_depth_frame()
-        self.color_frame = aligned_frames.get_color_frame()
+        if self.enable_depth:
+            aligned_frames = self.align.process(frames)
+            self.depth_frame = aligned_frames.get_depth_frame()
+            self.color_frame = aligned_frames.get_color_frame()
+        else:
+            self.color_frame = frames.get_color_frame()
+            self.depth_frame = None
         
         if not self.color_frame:
             return None
