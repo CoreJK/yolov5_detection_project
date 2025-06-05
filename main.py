@@ -59,14 +59,14 @@ def main():
             # 执行检测
             detections = detector.detect(frame)
             
-            # 获取深度信息（如果是RealSense摄像头且启用了深度检测）
+            # 先获取深度信息（在翻转前，使用原始坐标）
             depth_info = {}
             if isinstance(camera, RealSenseCamera) and camera.enable_depth:
                 for i, det in enumerate(detections):
                     center_x, center_y = det['center']
                     depth = camera.get_depth_at_point(center_x, center_y)
                     if depth is not None:
-                        depth_info[i] = depth / 1000.0  # 转换为米
+                        depth_info[i] = depth  # RealSense返回的就是米
 
             # 左右翻转图像
             frame = cv2.flip(frame, 1)
