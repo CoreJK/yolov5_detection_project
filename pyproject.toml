@@ -6,15 +6,12 @@ authors = [
     {name = "任伟明", email = "corejk@163.com"},
 ]
 dependencies = [
-    "torch>=1.7.0",
-    "torchvision>=0.8.1",
     "opencv-python>=4.1.2",
     "numpy>=1.18.5",
     "pyrealsense2>=2.50.0",
     "PyYAML>=5.3.1",
     "pandas>=2.2.3",
     "requests>=2.32.3",
-    "ultralytics>=8.3.149",
     "setuptools>=80.9.0",
     "scipy>=1.15.3",
     "seaborn>=0.13.2",
@@ -51,6 +48,20 @@ exclude_packages = ["*"]
 [[tool.pdm.source]]
 name = "tsinghua"
 url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+exclude_packages = [
+  "nvidia-cublas-*",
+  "nvidia-cuda-cupti-*",
+  "nvidia-cuda-nvrtc-*",
+  "nvidia-cuda-runtime-*",
+  "nvidia-cudnn-*",
+  "nvidia-cufft-*",
+  "nvidia-curand-*",
+  "nvidia-cusolver-*",
+  "nvidia-cusparse-*",
+  "nvidia-nccl-*",
+  "nvidia-nvtx-*",
+  "triton",
+]
 
 [[tool.pdm.source]]
 name = "pypi"

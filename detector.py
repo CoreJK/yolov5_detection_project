@@ -1,8 +1,7 @@
-import torch
 import cv2
 import numpy as np
 import yaml
-from typing import List, Tuple, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 import warnings
 import os
 import onnxruntime
@@ -13,14 +12,13 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 
 class YOLODetector:
     """YOLOv5目标检测类"""
-    def __init__(self, model_path: str, yaml_path: str = None, conf_threshold: float = 0.25, use_onnx: bool = False):
+    def __init__(self, model_path: str, yaml_path: str = None, conf_threshold: float = 0.25):
         """
         初始化检测器
         Args:
-            model_path: YOLOv5模型路径
+            model_path: YOLOv5 ONNX模型路径
             yaml_path: 数据集配置文件路径，如果为None则使用默认路径
             conf_threshold: 置信度阈值
-            use_onnx: 是否使用ONNX模型
         """
         # 加载类别名称
         if yaml_path is None:
@@ -36,13 +34,8 @@ class YOLODetector:
             self.names = {}
         
         self.conf_threshold = conf_threshold
-        self.use_onnx = use_onnx
         self.img_size = 640
-        
-        if use_onnx:
-            self.init_onnx_model(model_path)
-        else:
-            self.init_torch_model(model_path)
+        self.init_onnx_model(model_path)
 
     def init_onnx_model(self, model_path: str):
         """初始化ONNX模型"""
@@ -51,14 +44,6 @@ class YOLODetector:
         self.output_name = self.model.get_outputs()[0].name
         input_shape = self.model.get_inputs()[0].shape
         print(f"ONNX模型输入形状: {input_shape}")
-
-    def init_torch_model(self, model_path: str):
-        """初始化PyTorch模型"""
-        with torch.amp.autocast('cuda'):
-            self.model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path)
-            self.model.conf = self.conf_threshold
-            self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-            self.model.to(self.device)
 
     def preprocess(self, frame: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         """预处理图像"""
@@ -78,13 +63,6 @@ class YOLODetector:
         Returns:
             检测结果列表，每个结果包含类别、置信度、边界框和中心点坐标
         """
-        if self.use_onnx:
-            return self.detect_onnx(frame)
-        else:
-            return self.detect_torch(frame)
-
-    def detect_onnx(self, frame: np.ndarray) -> List[Dict]:
-        """使用ONNX模型进行检测"""
         img0, img = self.preprocess(frame)
         pred = self.model.run(None, {self.input_name: img})[0]
         pred = pred.astype(np.float32)
@@ -119,28 +97,6 @@ class YOLODetector:
                 detections.append(detection)
         
         return detections
-
-    def detect_torch(self, frame: np.ndarray) -> List[Dict]:
-        """使用PyTorch模型进行检测"""
-        with torch.amp.autocast('cuda'):
-            results = self.model(frame)
-            detections = []
-            
-            for *xyxy, conf, cls in results.xyxy[0].cpu().numpy():
-                x1, y1, x2, y2 = map(int, xyxy)
-                center_x = int((x1 + x2) / 2)
-                center_y = int((y1 + y2) / 2)
-                
-                detection = {
-                    'class': int(cls),
-                    'class_name': self.names.get(int(cls), str(int(cls))),
-                    'confidence': float(conf),
-                    'bbox': (x1, y1, x2, y2),
-                    'center': (center_x, center_y)
-                }
-                detections.append(detection)
-            
-            return detections
 
     def draw_detections(self, frame: np.ndarray, detections: List[Dict], depth_info: Optional[Dict] = None) -> np.ndarray:
         """

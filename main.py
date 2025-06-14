@@ -8,22 +8,12 @@ def main():
     # 获取当前脚本所在目录
     current_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # 选择模型类型
-    print("请选择模型类型：")
-    print("1. PyTorch模型 (.pt)")
-    print("2. ONNX模型 (.onnx)")
-    model_choice = input("请输入选择（1或2）：")
-    use_onnx = model_choice == "2"
-    
     # 设置模型路径
-    if use_onnx:
-        model_path = os.path.join(current_dir, "models", "best.onnx")
-    else:
-        model_path = os.path.join(current_dir, "models", "best.pt")
+    model_path = os.path.join(current_dir, "models", "best.onnx")
     
     # 初始化检测器
     yaml_path = os.path.join(current_dir, "datasets", "custom.yaml")
-    detector = YOLODetector(model_path, yaml_path=yaml_path, conf_threshold=0.75, use_onnx=use_onnx)
+    detector = YOLODetector(model_path, yaml_path=yaml_path, conf_threshold=0.75)
 
     # 选择摄像头类型
     print("\n请选择摄像头类型：")
@@ -33,7 +23,7 @@ def main():
 
     # 初始化摄像头
     if choice == "1":
-        camera = WebCamera(camera_id=0)
+        camera = WebCamera(camera_id=1)
     else:
         # 询问是否启用深度检测
         print("\n是否启用深度检测？")
